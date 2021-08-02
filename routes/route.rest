@@ -1,0 +1,25 @@
+GET http://localhost:8000/subscribers
+
+###
+GET http://localhost:8000/subscribers/61079798399d91fb5d357a6b
+
+###
+POST http://localhost:8000/subscribers/
+Content-Type: application/json
+
+{
+    "name":"Amazing",
+    "subscribedToChannel": "somechannel"
+}
+
+###
+DELETE  http://localhost:8000/subscribers/61079798399d91fb5d357a6b
+
+
+###
+PATCH   http://localhost:8000/subscribers/6107a8ecc441aa1807623a73
+Content-Type: application/json
+
+{
+    "name":"bombaya"
+}
