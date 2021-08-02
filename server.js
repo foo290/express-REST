@@ -4,14 +4,23 @@ const mongoose = require("mongoose")
 const configure = require('./configure');
 const middlewares = require('./backends/middlewares')
 const dbUtils = require('./backends/db_utils')
+const logger = require('./logger/logger')
 
 const app = express()
+const print = new logger.Logger()
 
 // Configuring middleware and stuffs
 MIDDLEWARES = [
     middlewares.loggerMiddleware,
     middlewares.ipFilterMiddleware,
-    middlewares.isAuthenticatedOrReadOnlyMiddleware
+    middlewares.testing_middleware,
+    middlewares.excludePathFromMiddleware(
+        [
+            '/auth/login',
+            '/user/create'
+        ], middlewares.authenticateJwtTokenMiddleware
+    )
+    // middlewares.isAuthenticatedOrReadOnlyMiddleware
 ]
 
 configure.apply_middlewares(app, MIDDLEWARES)
@@ -26,25 +35,15 @@ db = dbUtils.getMongoDB(
 
 app.use(express.json())
 
-const subscribersRoter = require('./routes/users_api_endpoint')
+const usersRouter = require('./routes/userApiEndpoint')
+const loginSys = require('./routes/loginSys')
 
-app.use('/subscribers', subscribersRoter)
-
-
-
-
-
-
-
-
-
-
-
-
+app.use('/user', usersRouter)
+app.use('/auth', loginSys)
 
 
 
 
 app.listen(8000, ()=>{
-    console.log("Server started...")
+    print.info('Server started...')
 })

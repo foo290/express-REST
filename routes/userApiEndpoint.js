@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router()
 const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
-const logger = require('../logger/logger')
+const logger = require('../logger/logger');
+const { $where } = require('../models/user');
 
 const log = new logger.Logger()
 
@@ -25,26 +27,34 @@ router.get('/:id', getUser, (req, res)=>{
 })
 
 //Create one
-router.post('/', async (req, res)=>{
+router.post('/create', async (req, res)=>{
     log.info(`Post request recieved`)
-
-    const subs = new User(req.body)
+    // TODO: check required param before hitting the usage
     try {
-        const newSubs = await subs.save()
-        res.status(201).json(newSubs)
+        const hashedPw = await bcrypt.hash(req.body.password, 10)
+        req.body.password = hashedPw
+
+        const user = new User(req.body)
+        try {
+            const newUser = await user.save()
+            res.status(201).json(newUser)
+        } catch (error) {
+            res.status(400).json({message: error.message})
+        }
+
     } catch (error) {
-        res.status(400).json({message: error.message})
+        res.status(500).json({message: error.message})
     }
+
 })
+
 // update one
 router.patch('/:id', getUser, async(req, res)=>{
     log.info(`Patch request recieved for id : ${req.params.id}`)
-    if (req.body.name != null){
-        res.user.name = req.body.name
-    }
-    if (req.body.subscribedToChannel != null){
-        res.user.subscribedToChannel = req.body.subscribedToChannel
-    }
+
+    Object.keys(req.body).map(key => {
+        res.user[key] = req.body[key]
+    })
 
     try {
         const updated = await res.user.save()

@@ -1,26 +1,47 @@
-GET http://localhost:8000/subscribers
+GET http://localhost:8000/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJpc1N1cGVyVXNlciI6ZmFsc2UsImlzQWN0aXZlIjpmYWxzZSwiX2lkIjoiNjEwODIxZGMzMWU2NjVlYWFmMzk3ZDQ5IiwidXNlcm5hbWUiOiJOaXRpbiIsImVtYWlsIjoiU29tZUVtYWlsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJGV2TTd5elN6Z21aV1lORmFHRmhmM3VXQ1kwcGF4eVZYd2JxTTlVOVNrcHlQZFZUVGdxa0MyIiwiam9pbmVkRGF0ZSI6IjIwMjEtMDgtMDJUMTY6NDg6MjguMTY2WiIsImxhc3RMb2dpbiI6IjIwMjEtMDgtMDJUMTY6NDg6MjguMTY2WiIsIl9fdiI6MH0sImlhdCI6MTYyNzkyNzg4MH0.vlYNX3l6AfmITVL5--K7TElCKrZN18vMYiFwodtUydA
 
 ###
-GET http://localhost:8000/subscribers/6108031e92a5f3c73d048b29
+GET http://localhost:8000/user/6108031e92a5f3c73d048b29
 
 ###
-POST http://localhost:8000/subscribers/
+POST http://localhost:8000/user/create
 Content-Type: application/json
 
 {
-    "username":"Amazing2",
+    "username":"Nitin",
     "email": "SomeEmail@gmail.com",
     "password": "boo1234"
 }
 
 ###
-DELETE  http://localhost:8000/subscribers/61079798399d91fb5d357a6b
+DELETE  http://localhost:8000/user/610821dc31e665eaaf397d49
 
 
 ###
-PATCH   http://localhost:8000/subscribers/6107a8ecc441aa1807623a73
+PATCH   http://localhost:8000/user/61083b97e796a216b4aaec3f
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJpc1N1cGVyVXNlciI6ZmFsc2UsImlzQWN0aXZlIjpmYWxzZSwiX2lkIjoiNjEwODNiOTdlNzk2YTIxNmI0YWFlYzNmIiwidXNlcm5hbWUiOiJOaXRpbiIsImVtYWlsIjoiU29tZUVtYWlsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHo1elR0djFsNUJVdjVmelFIS0ZESU9mcjdPSktCaTFrdXpia0tqM2N4eTZkRVlNRXp1WEh5Iiwiam9pbmVkRGF0ZSI6IjIwMjEtMDgtMDJUMTg6Mzg6MTUuMDIwWiIsImxhc3RMb2dpbiI6IjIwMjEtMDgtMDJUMTg6Mzg6MTUuMDIxWiIsIl9fdiI6MH0sImlhdCI6MTYyNzkyOTUyNX0.9B__Df167W4g9f05aWGt2K9nCmi0tg325mISlWwwN3Y
+Content-Type: application/json
+
+
+{
+    "username":"Nitu"
+}
+
+###
+POST http://localhost:8000/auth/login
 Content-Type: application/json
 
 {
-    "name":"bombaya"
+    "username": "Nitin",
+    "password": "boo1234"
+}
+
+###
+POST http://localhost:8000/auth/pwauth
+Content-Type: application/json
+
+{
+    "username": "Nitin",
+    "password": "boo1234"
 }
