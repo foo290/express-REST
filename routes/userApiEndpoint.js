@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router()
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
+
 
 const logger = require('../logger/logger');
 const { $where } = require('../models/user');
@@ -33,6 +35,7 @@ router.post('/create', async (req, res)=>{
     try {
         const hashedPw = await bcrypt.hash(req.body.password, 10)
         req.body.password = hashedPw
+        req.body.isActive = true
 
         const user = new User(req.body)
         try {
@@ -49,15 +52,26 @@ router.post('/create', async (req, res)=>{
 })
 
 // update one
-router.patch('/:id', getUser, async(req, res)=>{
+router.patch('/update/:id', getUser, async(req, res)=>{
     log.info(`Patch request recieved for id : ${req.params.id}`)
-
-    Object.keys(req.body).map(key => {
-        res.user[key] = req.body[key]
-    })
-
+    let equalToBefore = true
     try {
-        const updated = await res.user.save()
+        Object.keys(req.body).map(key => {
+            if (res.user[key] != req.body[key]) {
+                res.user[key] = req.body[key]
+                equalToBefore = false
+                log.debug(`${key} updated in patch!`)
+            }
+        })
+
+        let updated = {user: await res.user.save(), updatePerformed: !equalToBefore}
+
+        if (!equalToBefore){
+            log.debug("Object updated, Generating updated access JWT token...")
+            const updatedAccessToken = jwt.sign({user: updated}, process.env.SECRET_KEY)
+            updated = Object.assign(updated, {updatedAccessToken: updatedAccessToken})
+        }
+
         res.json(updated)
     } catch (error) {
         res.status(400).json({message: error.message})
@@ -65,7 +79,7 @@ router.patch('/:id', getUser, async(req, res)=>{
 })
 
 // Delete one
-router.delete('/:id',getUser, async(req, res)=>{
+router.delete('/delete/:id',getUser, async(req, res)=>{
     log.info(`Delete request recieved for id : ${req.params.id}`)
     try {
         await res.user.remove()
@@ -80,6 +94,7 @@ router.delete('/:id',getUser, async(req, res)=>{
 async function getUser(req, res, next) {
     let user
     try {
+
         user = await User.findById(req.params.id)
         if (user == null){
             return res.status(404).json({message: "Cannot find user"})

@@ -40,6 +40,16 @@ function isAuthenticatedOrReadOnlyMiddleware(req, res, next){
     next()
 }
 
+function onlyAllowActiveUser(req, res, next){
+    print.debug("Allowing Active users only.")
+    if (!req.user.isActive){
+        print.error("User account is not activated")
+        return res.status(401).json({message:"Account not activated"})
+    }
+    next()
+
+}
+
 function testing_middleware(req, res, next){
     console.log(req.method === "GET");
     console.log(req.path);
@@ -86,6 +96,7 @@ module.exports = {
     isAuthenticatedMiddleware,
     isAuthenticatedOrReadOnlyMiddleware,
     authenticateJwtTokenMiddleware,
-    excludePathFromMiddleware
+    excludePathFromMiddleware,
+    onlyAllowActiveUser
 }
 

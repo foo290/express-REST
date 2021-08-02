@@ -5,22 +5,31 @@ const configure = require('./configure');
 const middlewares = require('./backends/middlewares')
 const dbUtils = require('./backends/db_utils')
 const logger = require('./logger/logger')
+const settings = require('./settings')
 
 const app = express()
 const print = new logger.Logger()
 
 // Configuring middleware and stuffs
+
 MIDDLEWARES = [
     middlewares.loggerMiddleware,
     middlewares.ipFilterMiddleware,
     middlewares.testing_middleware,
+    
     middlewares.excludePathFromMiddleware(
-        [
-            '/auth/login',
-            '/user/create'
-        ], middlewares.authenticateJwtTokenMiddleware
-    )
-    // middlewares.isAuthenticatedOrReadOnlyMiddleware
+        settings.EXCLUDED_PATH_FROM_AUTH_MIDDLEWARE, 
+        middlewares.authenticateJwtTokenMiddleware
+    ),
+    middlewares.excludePathFromMiddleware(
+        settings.EXCLUDED_PATH_FROM_AUTH_MIDDLEWARE,
+        middlewares.isAuthenticatedOrReadOnlyMiddleware
+    ),
+    middlewares.excludePathFromMiddleware(
+        settings.EXCLUDED_PATH_FROM_AUTH_MIDDLEWARE,
+        middlewares.onlyAllowActiveUser
+    ),
+    
 ]
 
 configure.apply_middlewares(app, MIDDLEWARES)
