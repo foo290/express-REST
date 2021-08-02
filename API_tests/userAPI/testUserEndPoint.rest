@@ -1,15 +1,16 @@
 GET http://localhost:8000/subscribers
 
 ###
-GET http://localhost:8000/subscribers/61079798399d91fb5d357a6b
+GET http://localhost:8000/subscribers/6108031e92a5f3c73d048b29
 
 ###
 POST http://localhost:8000/subscribers/
 Content-Type: application/json
 
 {
-    "name":"Amazing",
-    "subscribedToChannel": "somechannel"
+    "username":"Amazing2",
+    "email": "SomeEmail@gmail.com",
+    "password": "boo1234"
 }
 
 ###

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router()
-const Subscriber = require('../models/subscriber')
+const User = require('../models/user')
 
 const logger = require('../logger/logger')
 
@@ -11,7 +11,7 @@ const log = new logger.Logger()
 router.get('/',async (req, res)=>{
     log.info("Get request recieved for all!")
     try {
-        const subs = await Subscriber.find()
+        const subs = await User.find()
         res.json(subs)
     } catch (error) {
         res.status(500).json({message:error.message})
@@ -19,19 +19,16 @@ router.get('/',async (req, res)=>{
 })
 
 // Get one
-router.get('/:id', getSubscriber, (req, res)=>{
+router.get('/:id', getUser, (req, res)=>{
     log.info(`Get request recieved for id : ${req.params.id}`)
-    res.send(res.subscriber)
+    res.send(res.user)
 })
 
 //Create one
 router.post('/', async (req, res)=>{
     log.info(`Post request recieved`)
 
-    const subs = new Subscriber({
-        name: req.body.name,
-        subscribedToChannel: req.body.subscribedToChannel
-    })
+    const subs = new User(req.body)
     try {
         const newSubs = await subs.save()
         res.status(201).json(newSubs)
@@ -40,17 +37,17 @@ router.post('/', async (req, res)=>{
     }
 })
 // update one
-router.patch('/:id', getSubscriber, async(req, res)=>{
+router.patch('/:id', getUser, async(req, res)=>{
     log.info(`Patch request recieved for id : ${req.params.id}`)
     if (req.body.name != null){
-        res.subscriber.name = req.body.name
+        res.user.name = req.body.name
     }
     if (req.body.subscribedToChannel != null){
-        res.subscriber.subscribedToChannel = req.body.subscribedToChannel
+        res.user.subscribedToChannel = req.body.subscribedToChannel
     }
 
     try {
-        const updated = await res.subscriber.save()
+        const updated = await res.user.save()
         res.json(updated)
     } catch (error) {
         res.status(400).json({message: error.message})
@@ -58,10 +55,10 @@ router.patch('/:id', getSubscriber, async(req, res)=>{
 })
 
 // Delete one
-router.delete('/:id',getSubscriber, async(req, res)=>{
+router.delete('/:id',getUser, async(req, res)=>{
     log.info(`Delete request recieved for id : ${req.params.id}`)
     try {
-        await res.subscriber.remove()
+        await res.user.remove()
         res.status(200).json({message: "deleted!"})
     } catch (error) {
         res.status(500).json(error.message)
@@ -70,17 +67,17 @@ router.delete('/:id',getSubscriber, async(req, res)=>{
 
 
 // Middleware
-async function getSubscriber(req, res, next) {
-    let subscriber
+async function getUser(req, res, next) {
+    let user
     try {
-        subscriber = await Subscriber.findById(req.params.id)
-        if (subscriber == null){
+        user = await User.findById(req.params.id)
+        if (user == null){
             return res.status(404).json({message: "Cannot find user"})
         }
     } catch (error) {
         return res.status(500).json({message: error.message})
     }
-    res.subscriber = subscriber
+    res.user = user
     next()
 }
 
