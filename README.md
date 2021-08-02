@@ -1,5 +1,5 @@
 # express-REST
-A REST API implementation in nodejs from scratch which includes features like:
+A REST-API with **MongoDB** implementation in nodejs from scratch which includes features like:
 
 * User Management
 * User Login Authentication
