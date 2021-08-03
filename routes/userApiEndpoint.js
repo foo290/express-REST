@@ -3,10 +3,10 @@ const router = express.Router()
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
-
+const utils = require('./utils')
+const settings = require('../settings')
 
 const logger = require('../logger/logger');
-const { $where } = require('../models/user');
 
 const log = new logger.Logger()
 
@@ -31,7 +31,16 @@ router.get('/:id', getUser, (req, res)=>{
 //Create one
 router.post('/create', async (req, res)=>{
     log.info(`Post request recieved`)
-    // TODO: check required param before hitting the usage
+    
+    if (!utils.validateEssentialFields(settings.SIGNUP_ESSENTIALS, req.body)){
+        log.error("Essential fields not provided for sign up.")
+        return res.status(401).json({message: "Essentials fields are not provided", "fields": settings.SIGNUP_ESSENTIALS})
+    }
+    if (!utils.validateEmail(req.body.email)){
+        log.error("Email format is not valid")
+        return res.status(401).json({message: "Email format is not valid"})
+    }
+
     try {
         const hashedPw = await bcrypt.hash(req.body.password, 10)
         req.body.password = hashedPw
