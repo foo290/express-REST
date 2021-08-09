@@ -1,5 +1,5 @@
 GET http://localhost:8000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJpc1N1cGVyVXNlciI6ZmFsc2UsImlzQWN0aXZlIjp0cnVlLCJfaWQiOiI2MTA4NDllZjQ4YTBiZjJhYWMzOTE2ZjgiLCJ1c2VybmFtZSI6Ik5pdGluIiwiZW1haWwiOiJTb21lRW1haWxAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkb3Q5VVFzL1RrbGVnaEhtSFpiUEF6Lk9wQU54Tmp3WWxZeWlhWllTUDhmV2oyV014eDB5UG0iLCJqb2luZWREYXRlIjoiMjAyMS0wOC0wMlQxOTozOToyNy4wMTNaIiwibGFzdExvZ2luIjoiMjAyMS0wOC0wMlQxOTozOToyNy4wMTNaIiwiX192IjowfSwiaWF0IjoxNjI3OTMzNzcxfQ.fYLq4yW54egQKNyjOdGZxTZrS9sUm7QZYKslcWVIC_E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJpc1N1cGVyVXNlciI6ZmFsc2UsImlzQWN0aXZlIjp0cnVlLCJfaWQiOiI2MTEwMjA2N2M1NGRjZjA2NWE0YTMwNWEiLCJ1c2VybmFtZSI6Im5ld05pdGluIiwiZW1haWwiOiJTb21lRW1haWxAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkc2UxWC5adENnL0ZUSHNqMFc3QzZ5TzBrY2o5clZQYXVTT2szUkQwYkhUSk54c1pWZGZWSU8iLCJqb2luZWREYXRlIjoiMjAyMS0wOC0wOFQxODoyMDoyMy44MzlaIiwibGFzdExvZ2luIjoiMjAyMS0wOC0wOFQxODoyMDoyMy44MzlaIiwiX192IjowfSwiaWF0IjoxNjI4NDQ3MDExfQ.SF_2oUogdOz7KSWehCpt0cs5Z6a5trTdIp8ZNddqzoU
 
 ###
 GET http://localhost:8000/user/610849ef48a0bf2aac3916f8
@@ -10,8 +10,8 @@ POST http://localhost:8000/user/create
 Content-Type: application/json
 
 {
-    "username":"Nitin",
-    "email": "SomeEmail.com",
+    "username":"newNitin",
+    "email": "SomeEmail@gmail.com",
     "password": "boo1234"
 }
 
@@ -33,7 +33,7 @@ POST http://localhost:8000/auth/login
 Content-Type: application/json
 
 {
-    "username": "Nitin",
+    "username": "newNitin",
     "password": "boo1234"
 }
 

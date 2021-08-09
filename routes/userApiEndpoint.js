@@ -11,7 +11,7 @@ const logger = require('../logger/logger');
 const log = new logger.Logger()
 
 
-// Get all
+// Endpoint to get all users
 router.get('/',async (req, res)=>{
     log.info("Get request recieved for all!")
     try {
@@ -22,29 +22,35 @@ router.get('/',async (req, res)=>{
     }
 })
 
-// Get one
+// Endpoint to get user by id
 router.get('/:id', getUser, (req, res)=>{
     log.info(`Get request recieved for id : ${req.params.id}`)
+
+    // user will be added in response object by getUser middleware
     res.send(res.user)
 })
 
-//Create one
+// Endpoint to create new users
 router.post('/create', async (req, res)=>{
     log.info(`Post request recieved`)
     
+    // Checking essential info for creating a user
     if (!utils.validateEssentialFields(settings.SIGNUP_ESSENTIALS, req.body)){
         log.error("Essential fields not provided for sign up.")
         return res.status(401).json({message: "Essentials fields are not provided", "fields": settings.SIGNUP_ESSENTIALS})
     }
+
+    // Checking email format
     if (!utils.validateEmail(req.body.email)){
         log.error("Email format is not valid")
         return res.status(401).json({message: "Email format is not valid"})
     }
 
     try {
+        // Hashing password
         const hashedPw = await bcrypt.hash(req.body.password, 10)
-        req.body.password = hashedPw
-        req.body.isActive = true
+        req.body.password = hashedPw  // set password as hashed password
+        req.body.isActive = true  // Mark the user as active
 
         const user = new User(req.body)
         try {
@@ -60,12 +66,16 @@ router.post('/create', async (req, res)=>{
 
 })
 
-// update one
+// Endpoint to update a user
 router.patch('/update/:id', getUser, async(req, res)=>{
     log.info(`Patch request recieved for id : ${req.params.id}`)
-    let equalToBefore = true
+
+    let equalToBefore = true  // A bool to keep track if the user is updated or not
+    
     try {
         Object.keys(req.body).map(key => {
+            // Edit only those field which are provided in req and are 
+            // different from previous values
             if (res.user[key] != req.body[key]) {
                 res.user[key] = req.body[key]
                 equalToBefore = false
@@ -73,8 +83,13 @@ router.patch('/update/:id', getUser, async(req, res)=>{
             }
         })
 
-        let updated = {user: await res.user.save(), updatePerformed: !equalToBefore}
+        // Object containing updated user object, to be used to generate new JWT token
+        let updated = {
+            user: await res.user.save(), 
+            updatePerformed: !equalToBefore
+        }
 
+        // Only generate token if the object is modified
         if (!equalToBefore){
             log.debug("Object updated, Generating updated access JWT token...")
             const updatedAccessToken = jwt.sign({user: updated}, process.env.SECRET_KEY)
@@ -82,12 +97,13 @@ router.patch('/update/:id', getUser, async(req, res)=>{
         }
 
         res.json(updated)
+
     } catch (error) {
         res.status(400).json({message: error.message})
     }
 })
 
-// Delete one
+// Endpoint to delete a user
 router.delete('/delete/:id',getUser, async(req, res)=>{
     log.info(`Delete request recieved for id : ${req.params.id}`)
     try {
@@ -99,7 +115,7 @@ router.delete('/delete/:id',getUser, async(req, res)=>{
 })
 
 
-// Middleware
+// Middleware to get user and set it in response object
 async function getUser(req, res, next) {
     let user
     try {
